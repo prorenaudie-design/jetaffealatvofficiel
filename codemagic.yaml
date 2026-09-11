@@ -9,6 +9,8 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: fr.jetaffealatvofficiel.app
+      vars:
+        BUNDLE_ID: "fr.jetaffealatvofficiel.app"
       xcode: latest
       cocoapods: default
     scripts:
@@ -16,10 +18,12 @@ workflows:
         script: |
           cd src
           pod install
-      - name: Set up code signing settings on Xcode project
+      - name: Fetch and set up code signing
         script: |
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
           cd src
-          xcode-project xcode-project use-profiles
+          xcode-project use-profiles
       - name: Build ipa for distribution
         script: |
           cd src
