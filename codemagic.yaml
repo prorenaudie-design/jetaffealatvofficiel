@@ -19,7 +19,7 @@ workflows:
       - name: Set up code signing settings on Xcode project
         script: |
           cd src
-          xcode-project use-automatic-signing
+          xcode-project xcode-project use-profiles
       - name: Build ipa for distribution
         script: |
           cd src
