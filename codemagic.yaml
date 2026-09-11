@@ -1,0 +1,32 @@
+workflows:
+  ios-workflow:
+    name: iOS Workflow
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: codemagic
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: fr.jetaffealatvofficiel.app
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install CocoaPods dependencies
+        script: |
+          cd src
+          pod install
+      - name: Set up code signing settings on Xcode project
+        script: |
+          cd src
+          xcode-project use-profiles
+      - name: Build ipa for distribution
+        script: |
+          cd src
+          xcode-project build-ipa --workspace "Je Taffe à la TV.xcworkspace" --scheme "Je Taffe à la TV"
+    artifacts:
+      - src/build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
